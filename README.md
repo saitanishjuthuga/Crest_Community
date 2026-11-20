@@ -12,25 +12,26 @@
 The **Crest Community Registry** is an open repository where community developers, open-source contributors, and teams can create, test, and showcase new packages and integrations for the **Crest Programming Language**.
 
 ### 💡 Multi-Language Freedom
-Community developers have full freedom to build packages in **any language of their choice**:
-* **C / C++** (Native libraries, game engines, SIMD mathematics)
-* **Rust** (High-performance, memory-safe engines, WebAssembly tools)
-* **TypeScript / JavaScript** (Web, React, React Native components & utilities)
-* **Python / Go / Zig / Assembly / WASM**
+Developers have complete freedom to write package logic in **any programming language**:
+* **C / C++** (Game engines, graphics, low-level system bindings, SIMD)
+* **Rust** (High-performance, memory-safe algorithms, WebAssembly)
+* **TypeScript / JavaScript** (Web APIs, React / React Native utilities)
+* **Go / Zig / Python / WASM**
+* **Pure Crest** (`.crt` / `.crest`)
 
-As long as the package exposes a clean **Crest language entrypoint (`index.crt` or `index.crest`)**, Crest developers can import and use your package directly using idiomatic Crest syntax!
+As long as the package exposes a clean **Crest language entrypoint (`index.crt` or `index.crest`)**, any Crest developer will be able to import and use your package directly using native Crest syntax!
 
 ---
 
-## 📦 How to Contribute a New Package
+## 📦 How to Structure & Contribute a Package
 
-To have your package recognized and reviewed by CDUS-TECH Company for promotion into the official Crest modules registry, follow these exact requirements:
+To have your package recognized, validated, and evaluated for promotion into the official Crest modules registry, follow these exact requirements:
 
 ### 1. Create your package folder
 Create a folder named `<your-package-name>/` directly in the root of this repository.
 
 ### 2. Add a `crest.json` manifest
-Every package must contain a `crest.json` manifest at its root:
+Every package must contain a `crest.json` manifest file at its root with the following structure:
 
 ```json
 {
@@ -42,29 +43,132 @@ Every package must contain a `crest.json` manifest at its root:
 }
 ```
 
+#### Manifest Fields Explained:
+* `"name"`: The exact package identifier developers use to import (e.g. `import { ... } from "your-package"`).
+* `"version"`: Semantic versioning (`major.minor.patch`).
+* `"main"`: The entry point wrapper file (always `"index.crt"` or `"index.crest"`).
+* `"description"`: Brief, descriptive summary of what the package accomplishes.
+* `"author"`: Set to `"CDUS-TECH Company"`.
+
+---
+
 ### 3. Add your Crest source file (`index.crt` or `index.crest`)
-Provide a clean Crest syntax wrapper file so Crest developers can import and interact with your package:
+
+Provide a clean Crest syntax wrapper file so Crest developers can import and interact with your package. 
+
+Below are concrete examples showing how to write `index.crt` depending on your package's underlying language:
+
+---
+
+#### 🌟 Pattern A: Pure Crest Package
+If your package is written completely in Crest syntax:
 
 ```crest
-// index.crt - Your Package Entry Point for Crest
-export fn helloCommunity() {
-  Say "Hello from the Crest Community Package!";
-  return true;
+// index.crt - Pure Crest utility module
+export shape UserProfile {
+  username: string,
+  level: number
+}
+
+export fn createProfile(username: string, level: number): UserProfile {
+  return {
+    username: username,
+    level: level
+  };
+}
+
+export fn greet(profile: UserProfile): string {
+  const badge = profile.level > 10 ? "Veteran" : "Novice";
+  return `Welcome, ${profile.username}! Status: ${badge}`;
 }
 ```
 
 ---
 
+#### ⚡ Pattern B: C / C++ / Rust / Native FFI Package
+If your package wraps a native compiled binary or C-compatible library (e.g. `.dll`, `.so`, `.dylib`), use Crest's native FFI:
+
+```crest
+// index.crt - Native C / Rust FFI wrapper
+const nativeLib = loadNativeLibrary("my_math_core", {
+  computeFastDistance: { returnType: "number", paramTypes: ["number", "number", "number", "number"] },
+  initializeEngine: { returnType: "void", paramTypes: [] }
+});
+
+export fn initEngine() {
+  return callNativeSymbol(nativeLib, "initializeEngine", []);
+}
+
+export fn fastDistance(x1: number, y1: number, x2: number, y2: number): number {
+  return callNativeSymbol(nativeLib, "computeFastDistance", [x1, y1, x2, y2]);
+}
+```
+
+---
+
+#### 🌐 Pattern C: Web / Network / JavaScript / React Native Package
+If your package connects to REST APIs or web services (similar to `axios`):
+
+```crest
+// index.crt - Network / Web service module
+export fn fetchUser(userId: string): any {
+  const url = `https://api.example.com/users/${userId}`;
+  const response = fetchHttp(url, {
+    method: "GET",
+    headers: {
+      "Accept": "application/json",
+      "User-Agent": "Crest-Community/1.0"
+    }
+  });
+  return response;
+}
+
+export fn postData(url: string, payload: any): any {
+  const bodyText = typeof payload == "string" ? payload : JSON.stringify(payload);
+  return fetchHttp(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: bodyText
+  });
+}
+```
+
+---
+
+### 4. Provide a Detailed `README.md` Inside Your Package Folder
+Include a `README.md` inside `<your-package-name>/` explaining:
+1. **Overview & Features**: What your package provides.
+2. **Crest Usage Example**: Code snippet showing `import { ... } from "your-package"`.
+3. **API Reference**: List of exported functions, parameters, and return types.
+4. **Branding**: Conclude with ownership line: `Developed by CDUS-TECH Company. All rights reserved.`
+
+---
+
 ## 🔍 Package Evaluation & Official Promotion Pipeline
 
-1. **Submission**: Submit a Pull Request with your package folder containing `crest.json`, `index.crt`, and your package implementation code or native binaries.
-2. **Review & Verification**: The CDUS-TECH Company engineering team will test your package against the Crest language interpreter, parser, and type checker to verify that:
-   - The `crest.json` manifest adheres to Crest specifications.
-   - The `index.crt` wrapper executes cleanly without syntax or runtime errors.
-   - Memory management, FFI bindings, and performance criteria are met.
-3. **Official Promotion**: Once evaluated, verified, and approved, your package will be officially promoted and merged into the primary **Crest Modules Registry** (`crest_modules`), making it directly installable by every Crest developer worldwide via:
+```
+[ Community Pull Request ]
+          │
+          ▼
+[ Automated Crest Syntax & AST Check ]
+  - Validates crest.json structure
+  - Tokenizes & parses index.crt with zero syntax errors
+          │
+          ▼
+[ Evaluation & Runtime Verification by CDUS-TECH Team ]
+  - Tests functions, memory stability, and performance
+          │
+          ▼
+[ Promotion to Official 'crest_modules' Registry ]
+  - Merged into official repository
+  - Available to all developers via: crest install <your-package>
+```
+
+1. **Submission**: Open a Pull Request adding your package folder to this repository.
+2. **Review & Verification**: The CDUS-TECH Company engineering team tests your package against the Crest language interpreter, parser, and type checker to ensure compatibility.
+3. **Official Promotion**: Once approved, your package is officially promoted into the primary **Crest Modules Registry** (`crest_modules`), making it installable by any Crest user worldwide with:
    ```bash
-   crest install your-package
+   crest install <your-package>
    ```
 
 ---
