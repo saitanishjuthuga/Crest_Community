@@ -173,6 +173,27 @@ Include a `README.md` inside `<your-package-name>/` explaining:
 
 ---
 
+## 🔄 Package Updates & Continuous Re-Verification Lifecycle
+
+Even after your package is officially verified and published to the `crest_modules` registry, your development lifecycle continues seamlessly:
+
+### 1. Releasing an Update
+Whenever you add new features, fix bugs, or optimize performance:
+* Make your code updates in your package folder.
+* **Bump the version number** in your `crest.json` manifest according to Semantic Versioning (e.g. from `"1.0.0"` to `"1.0.1"` or `"1.1.0"`).
+
+### 2. Automated & Continuous Re-Verification
+* Every time a new version is submitted, the CDUS-TECH verification pipeline automatically **re-verifies the package over and over again**:
+  * **Syntax & AST Re-check**: Validates that all new syntax constructs parse cleanly.
+  * **Regression Testing**: Confirms that existing functions and APIs did not break.
+  * **Memory & FFI Audit**: Checks that native bindings and allocations remain zero-leak and safe.
+* Once the new version passes re-verification, it is immediately updated and published in the official registry.
+
+### 3. Developer Peace of Mind
+This continuous re-verification guarantees that any package bearing the **CDUS-TECH Company** verification badge is 100% reliable, safe, and backwards-compatible for all Crest developers worldwide with every version release.
+
+---
+
 <div align="center">
   <sub>© 2026 <strong>CDUS-TECH Company</strong>. All rights reserved. | Official Crest Programming Language Ecosystem</sub>
 </div>
